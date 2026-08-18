@@ -9,7 +9,12 @@ import {
   Calendar,
   FileText,
   Copy,
-  Check
+  Check,
+  LayoutGrid,
+  TableProperties,
+  Filter,
+  ChevronDown,
+  ChevronUp
 } from 'lucide-react';
 
 interface LedgerTableProps {
@@ -36,6 +41,8 @@ export const LedgerTable: React.FC<LedgerTableProps> = ({
   const [sortBy, setSortBy] = useState<'index' | 'amount' | 'code' | 'date'>('index');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
   const [copiedId, setCopiedId] = useState<string | null>(null);
+  const [viewMode, setViewMode] = useState<'auto' | 'cards' | 'table'>('auto');
+  const [isFiltersOpen, setIsFiltersOpen] = useState(false);
 
   // Extract unique months
   const availableMonths = useMemo(() => {
@@ -112,12 +119,12 @@ export const LedgerTable: React.FC<LedgerTableProps> = ({
   return (
     <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
       {/* Header & Controls */}
-      <div className="p-5 border-b border-slate-200 bg-slate-50/50">
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+      <div className="p-4 sm:p-5 border-b border-slate-200 bg-slate-50/70">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <div>
             <div className="flex items-center space-x-2">
-              <FileText className="w-5 h-5 text-blue-600" />
-              <h2 className="text-base font-bold text-slate-900">
+              <FileText className="w-5 h-5 text-blue-600 shrink-0" />
+              <h2 className="text-sm sm:text-base font-bold text-slate-900 leading-snug">
                 Disbursement & Expense Ledger
               </h2>
             </div>
@@ -126,18 +133,62 @@ export const LedgerTable: React.FC<LedgerTableProps> = ({
             </p>
           </div>
 
+          <div className="flex items-center justify-between sm:justify-end gap-2">
+            {/* View Mode Toggle */}
+            <div className="inline-flex rounded-lg border border-slate-200 bg-slate-100 p-0.5 print:hidden">
+              <button
+                onClick={() => setViewMode('cards')}
+                className={`inline-flex items-center space-x-1 px-2.5 py-1 rounded-md text-xs font-medium transition-colors cursor-pointer ${
+                  viewMode === 'cards'
+                    ? 'bg-white text-slate-900 shadow-xs'
+                    : 'text-slate-600 hover:text-slate-900'
+                }`}
+                title="Card View (Optimized for Mobile)"
+              >
+                <LayoutGrid className="w-3.5 h-3.5" />
+                <span>Cards</span>
+              </button>
+              <button
+                onClick={() => setViewMode('table')}
+                className={`inline-flex items-center space-x-1 px-2.5 py-1 rounded-md text-xs font-medium transition-colors cursor-pointer ${
+                  viewMode === 'table'
+                    ? 'bg-white text-slate-900 shadow-xs'
+                    : 'text-slate-600 hover:text-slate-900'
+                }`}
+                title="Spreadsheet Table View"
+              >
+                <TableProperties className="w-3.5 h-3.5" />
+                <span>Table</span>
+              </button>
+            </div>
+
+            <button
+              id="btn-add-ledger-item"
+              onClick={onAddNew}
+              className="inline-flex items-center space-x-1.5 px-3.5 py-2 min-h-[38px] bg-blue-600 hover:bg-blue-500 active:bg-blue-700 text-white text-xs sm:text-sm font-semibold rounded-lg shadow-sm transition-colors cursor-pointer shrink-0 touch-manipulation"
+            >
+              <Plus className="w-4 h-4" />
+              <span>Add Voucher</span>
+            </button>
+          </div>
+        </div>
+
+        {/* Mobile Filter Toggle Button */}
+        <div className="mt-3 block sm:hidden">
           <button
-            id="btn-add-ledger-item"
-            onClick={onAddNew}
-            className="inline-flex items-center space-x-1.5 px-3.5 py-2 bg-blue-600 hover:bg-blue-500 text-white text-sm font-medium rounded-lg shadow-sm transition-colors cursor-pointer self-start md:self-auto"
+            onClick={() => setIsFiltersOpen(!isFiltersOpen)}
+            className="w-full flex items-center justify-between px-3 py-2 bg-white border border-slate-200 rounded-lg text-xs font-semibold text-slate-700 shadow-2xs"
           >
-            <Plus className="w-4 h-4" />
-            <span>Add Voucher Line</span>
+            <div className="flex items-center space-x-2">
+              <Filter className="w-3.5 h-3.5 text-blue-600" />
+              <span>Search & Filter Options ({filteredItems.length} records)</span>
+            </div>
+            {isFiltersOpen ? <ChevronUp className="w-4 h-4 text-slate-400" /> : <ChevronDown className="w-4 h-4 text-slate-400" />}
           </button>
         </div>
 
         {/* Filters and search row */}
-        <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+        <div className={`mt-3 sm:mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3 ${isFiltersOpen ? 'block' : 'hidden sm:grid'}`}>
           {/* Search bar */}
           <div className="relative">
             <Search className="w-4 h-4 text-slate-400 absolute left-3 top-2.5" />
@@ -146,8 +197,8 @@ export const LedgerTable: React.FC<LedgerTableProps> = ({
               id="input-ledger-search"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search particulars, DRN, remarks..."
-              className="w-full pl-9 pr-3 py-2 bg-white border border-slate-300 rounded-lg text-xs placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              placeholder="Search particulars, DRN, PR..."
+              className="w-full pl-9 pr-3 py-2 bg-white border border-slate-300 rounded-lg text-xs placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent min-h-[38px]"
             />
           </div>
 
@@ -158,7 +209,7 @@ export const LedgerTable: React.FC<LedgerTableProps> = ({
               id="select-ledger-month"
               value={selectedMonth}
               onChange={(e) => setSelectedMonth(e.target.value)}
-              className="w-full pl-9 pr-3 py-2 bg-white border border-slate-300 rounded-lg text-xs text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full pl-9 pr-3 py-2 bg-white border border-slate-300 rounded-lg text-xs text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 min-h-[38px]"
             >
               <option value="ALL">All Periods (Jan - Jul 2026)</option>
               {availableMonths.map((m) => (
@@ -182,7 +233,7 @@ export const LedgerTable: React.FC<LedgerTableProps> = ({
                 setSortBy(sb);
                 setSortOrder(so);
               }}
-              className="w-full px-3 py-2 bg-white border border-slate-300 rounded-lg text-xs text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 bg-white border border-slate-300 rounded-lg text-xs text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 min-h-[38px]"
             >
               <option value="index-asc">Default Order (Chronological)</option>
               <option value="amount-desc">Amount: Highest to Lowest</option>
@@ -193,26 +244,26 @@ export const LedgerTable: React.FC<LedgerTableProps> = ({
           </div>
 
           {/* Active Filter summary */}
-          <div className="flex items-center justify-between px-3 py-1.5 bg-slate-100/80 rounded-lg border border-slate-200 text-xs">
+          <div className="flex items-center justify-between px-3 py-2 bg-slate-100/90 rounded-lg border border-slate-200 text-xs min-h-[38px]">
             <span className="text-slate-500">Showing:</span>
             <span className="font-semibold text-slate-800">
-              {filteredItems.length} of {items.length} items
+              {filteredItems.length} of {items.length} records
             </span>
           </div>
         </div>
 
-        {/* Category Filter Pills */}
-        <div className="mt-3 flex flex-wrap items-center gap-1.5 pt-2 border-t border-slate-200/60">
-          <span className="text-xs text-slate-400 font-medium mr-1">Filter Code:</span>
+        {/* Category Filter Pills (Horizontal Touch-Scrollable) */}
+        <div className="mt-3 flex items-center gap-1.5 pt-2 border-t border-slate-200/60 overflow-x-auto no-scrollbar pb-1 -mx-1 px-1">
+          <span className="text-xs text-slate-400 font-medium shrink-0 mr-1">Code:</span>
           <button
             onClick={() => onSelectCode('')}
-            className={`px-2.5 py-1 rounded-full text-xs font-semibold transition-colors ${
+            className={`px-2.5 py-1 rounded-full text-xs font-semibold transition-colors shrink-0 cursor-pointer ${
               !selectedCode
                 ? 'bg-slate-800 text-white'
                 : 'bg-slate-200/80 text-slate-700 hover:bg-slate-300'
             }`}
           >
-            All Codes ({items.length})
+            All ({items.length})
           </button>
           {categories.map((cat) => {
             const count = items.filter((i) => i.code === cat.code).length;
@@ -221,7 +272,7 @@ export const LedgerTable: React.FC<LedgerTableProps> = ({
               <button
                 key={cat.code}
                 onClick={() => onSelectCode(isSelected ? '' : cat.code)}
-                className={`px-2.5 py-1 rounded-full text-xs font-semibold transition-all border ${
+                className={`px-2.5 py-1 rounded-full text-xs font-semibold transition-all border shrink-0 cursor-pointer ${
                   isSelected
                     ? 'text-white shadow-xs'
                     : 'hover:bg-slate-100'
@@ -239,8 +290,144 @@ export const LedgerTable: React.FC<LedgerTableProps> = ({
         </div>
       </div>
 
-      {/* Table Content */}
-      <div className="overflow-x-auto">
+      {/* MOBILE CARD VIEW: Rendered when viewMode is 'cards' OR on small screens when viewMode is 'auto' */}
+      <div
+        className={`${
+          viewMode === 'table'
+            ? 'hidden'
+            : viewMode === 'cards'
+            ? 'block'
+            : 'block md:hidden'
+        } p-3.5 sm:p-4 space-y-2.5`}
+      >
+        {filteredItems.length === 0 ? (
+          <div className="py-12 text-center text-slate-400 text-xs">
+            No disbursement records match your filter criteria.
+          </div>
+        ) : (
+          filteredItems.map((item, idx) => {
+            const color = getCategoryColor(item.code);
+            return (
+              <div
+                key={item.id || idx}
+                className="p-3.5 bg-white rounded-xl border border-slate-200 shadow-2xs hover:border-slate-300 transition-all space-y-2.5"
+              >
+                {/* Card Top: Amount & Category Badge */}
+                <div className="flex items-start justify-between gap-2">
+                  <div>
+                    <span className="text-base sm:text-lg font-bold font-mono text-slate-900 block leading-tight">
+                      {formatCurrency(item.amount)}
+                    </span>
+                    <span className="text-[10px] text-slate-400 block mt-0.5">
+                      Voucher #{idx + 1} • {item.month || '2026'}
+                    </span>
+                  </div>
+
+                  <span
+                    className="px-2 py-0.5 rounded text-xs font-mono font-bold shrink-0"
+                    style={{
+                      backgroundColor: `${color}15`,
+                      color: color,
+                      border: `1px solid ${color}35`
+                    }}
+                  >
+                    {item.code}
+                  </span>
+                </div>
+
+                {/* Particulars Description */}
+                <p className="text-xs sm:text-sm font-medium text-slate-800 leading-snug">
+                  {item.particulars}
+                </p>
+
+                {/* Badges / Metadata */}
+                <div className="flex flex-wrap items-center gap-1.5 pt-1 text-[11px]">
+                  {item.drnNumber && (
+                    <div className="inline-flex items-center space-x-1 px-2 py-0.5 rounded bg-slate-100 text-slate-700 border border-slate-200 font-mono">
+                      <span className="truncate max-w-[170px]">{item.drnNumber}</span>
+                      <button
+                        onClick={() => handleCopy(item.drnNumber!, item.id)}
+                        className="text-slate-400 hover:text-slate-700 p-0.5 cursor-pointer"
+                        title="Copy DRN"
+                      >
+                        {copiedId === item.id ? (
+                          <Check className="w-3 h-3 text-emerald-600" />
+                        ) : (
+                          <Copy className="w-3 h-3" />
+                        )}
+                      </button>
+                    </div>
+                  )}
+
+                  {item.purchaseRequestNo && (
+                    <span className="px-2 py-0.5 rounded bg-blue-50 text-blue-700 border border-blue-200">
+                      PR: {item.purchaseRequestNo}
+                    </span>
+                  )}
+
+                  {item.additionalRemarks && (
+                    <span className="px-2 py-0.5 rounded bg-amber-50 text-amber-800 border border-amber-200">
+                      {item.additionalRemarks}
+                    </span>
+                  )}
+                </div>
+
+                {/* Actions Footer */}
+                <div className="pt-2 border-t border-slate-100 flex items-center justify-between text-xs print:hidden">
+                  <span className="text-[10px] text-slate-400">
+                    ID: {item.id}
+                  </span>
+                  <div className="flex items-center space-x-2">
+                    <button
+                      onClick={() => onEdit(item)}
+                      className="inline-flex items-center space-x-1 px-2.5 py-1.5 bg-slate-100 hover:bg-blue-50 text-slate-700 hover:text-blue-700 rounded-lg text-xs font-semibold transition-colors cursor-pointer touch-manipulation"
+                    >
+                      <Edit2 className="w-3.5 h-3.5 text-blue-600" />
+                      <span>Edit</span>
+                    </button>
+                    <button
+                      onClick={() => onDelete(item.id)}
+                      className="inline-flex items-center space-x-1 px-2.5 py-1.5 bg-slate-100 hover:bg-rose-50 text-slate-700 hover:text-rose-700 rounded-lg text-xs font-semibold transition-colors cursor-pointer touch-manipulation"
+                    >
+                      <Trash2 className="w-3.5 h-3.5 text-rose-600" />
+                      <span>Delete</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            );
+          })
+        )}
+
+        {/* Filtered Subtotal Card on Mobile */}
+        <div className="p-3.5 rounded-xl bg-slate-900 text-white shadow-sm flex items-center justify-between mt-3">
+          <div>
+            <span className="text-[10px] text-slate-400 block uppercase font-semibold">
+              Disbursements Subtotal ({filteredItems.length} items)
+            </span>
+            <span className="text-lg font-bold font-mono text-emerald-400">
+              {formatCurrency(filteredTotal)}
+            </span>
+          </div>
+          <button
+            onClick={onAddNew}
+            className="px-3 py-1.5 bg-blue-600 text-white rounded-lg text-xs font-bold shadow-xs cursor-pointer touch-manipulation"
+          >
+            + New Line
+          </button>
+        </div>
+      </div>
+
+      {/* DESKTOP TABLE VIEW: Rendered when viewMode is 'table' OR on desktop when viewMode is 'auto' */}
+      <div
+        className={`${
+          viewMode === 'cards'
+            ? 'hidden'
+            : viewMode === 'table'
+            ? 'block'
+            : 'hidden md:block'
+        } overflow-x-auto`}
+      >
         <table className="w-full text-left border-collapse text-xs sm:text-sm">
           <thead>
             <tr className="bg-slate-100 text-slate-700 uppercase font-semibold tracking-wider text-[11px] border-b border-slate-200">
@@ -294,7 +481,7 @@ export const LedgerTable: React.FC<LedgerTableProps> = ({
                           </span>
                           <button
                             onClick={() => handleCopy(item.drnNumber!, item.id)}
-                            className="text-slate-400 hover:text-slate-600 p-0.5 rounded transition-colors"
+                            className="text-slate-400 hover:text-slate-600 p-0.5 rounded transition-colors cursor-pointer"
                             title="Copy DRN"
                           >
                             {copiedId === item.id ? (
@@ -342,14 +529,14 @@ export const LedgerTable: React.FC<LedgerTableProps> = ({
                       <div className="flex items-center justify-center space-x-1 opacity-80 group-hover:opacity-100 transition-opacity">
                         <button
                           onClick={() => onEdit(item)}
-                          className="p-1 text-slate-500 hover:text-blue-600 hover:bg-blue-50 rounded transition-colors"
+                          className="p-1 text-slate-500 hover:text-blue-600 hover:bg-blue-50 rounded transition-colors cursor-pointer"
                           title="Edit Line Item"
                         >
                           <Edit2 className="w-3.5 h-3.5" />
                         </button>
                         <button
                           onClick={() => onDelete(item.id)}
-                          className="p-1 text-slate-500 hover:text-rose-600 hover:bg-rose-50 rounded transition-colors"
+                          className="p-1 text-slate-500 hover:text-rose-600 hover:bg-rose-50 rounded transition-colors cursor-pointer"
                           title="Delete Line Item"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
@@ -381,3 +568,4 @@ export const LedgerTable: React.FC<LedgerTableProps> = ({
     </div>
   );
 };
+

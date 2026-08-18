@@ -285,42 +285,42 @@ export const BillsEstimatorView: React.FC<BillsEstimatorViewProps> = ({
         </div>
 
         {/* View Switcher Tabs */}
-        <div className="mt-6 pt-5 border-t border-slate-800 flex flex-wrap items-center justify-between gap-3">
-          <div className="flex bg-slate-800 rounded-lg p-1 border border-slate-700">
+        <div className="mt-5 sm:mt-6 pt-4 sm:pt-5 border-t border-slate-800 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+          <div className="flex bg-slate-800 rounded-lg p-1 border border-slate-700 overflow-x-auto no-scrollbar max-w-full">
             <button
               onClick={() => setActiveTab('schedule')}
-              className={`px-3.5 py-1.5 text-xs font-semibold rounded-md transition-colors cursor-pointer ${
+              className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-colors cursor-pointer shrink-0 whitespace-nowrap ${
                 activeTab === 'schedule'
-                  ? 'bg-blue-600 text-white'
+                  ? 'bg-blue-600 text-white shadow-xs'
                   : 'text-slate-300 hover:text-white'
               }`}
             >
-              Upcoming Bills Queue ({estimatedBills.filter((b) => b.status !== 'paid').length})
+              Upcoming Queue ({estimatedBills.filter((b) => b.status !== 'paid').length})
             </button>
             <button
               onClick={() => setActiveTab('solvency')}
-              className={`px-3.5 py-1.5 text-xs font-semibold rounded-md transition-colors cursor-pointer ${
+              className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-colors cursor-pointer shrink-0 whitespace-nowrap ${
                 activeTab === 'solvency'
-                  ? 'bg-blue-600 text-white'
+                  ? 'bg-blue-600 text-white shadow-xs'
                   : 'text-slate-300 hover:text-white'
               }`}
             >
-              Category Solvency & Buffer Health
+              Category Solvency & Health
             </button>
             <button
               onClick={() => setActiveTab('timeline')}
-              className={`px-3.5 py-1.5 text-xs font-semibold rounded-md transition-colors cursor-pointer ${
+              className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-colors cursor-pointer shrink-0 whitespace-nowrap ${
                 activeTab === 'timeline'
-                  ? 'bg-blue-600 text-white'
+                  ? 'bg-blue-600 text-white shadow-xs'
                   : 'text-slate-300 hover:text-white'
               }`}
             >
-              12-Month Cash Flow Timeline (Jan-Dec)
+              12-Mo Cash Flow (Jan-Dec)
             </button>
           </div>
 
-          <div className="text-xs text-slate-400 flex items-center space-x-2">
-            <span>Active Pipeline:</span>
+          <div className="text-xs text-slate-400 flex items-center justify-between sm:justify-end space-x-2">
+            <span>Pipeline:</span>
             <strong className="text-emerald-400 font-mono text-sm">
               {formatCurrency(overview.totalEstimatedUpcomingBills)}
             </strong>

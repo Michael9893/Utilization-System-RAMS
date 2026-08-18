@@ -137,15 +137,15 @@ export const EstimatedBillModal: React.FC<EstimatedBillModalProps> = ({
   const selectedCategoryObj = categories.find((c) => c.code === code);
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
-      <div className="relative bg-white rounded-2xl shadow-xl max-w-xl w-full overflow-hidden border border-slate-200 animate-in fade-in zoom-in duration-150">
+    <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4">
+      <div className="relative bg-white rounded-2xl shadow-xl max-w-xl w-full max-h-[92vh] flex flex-col overflow-hidden border border-slate-200 animate-in fade-in zoom-in duration-150">
         {/* Header */}
-        <div className="px-6 py-4 bg-slate-900 text-white flex items-center justify-between border-b border-slate-800">
+        <div className="px-5 sm:px-6 py-3.5 sm:py-4 bg-slate-900 text-white flex items-center justify-between border-b border-slate-800 shrink-0">
           <div>
             <span className="px-2 py-0.5 rounded bg-blue-500/20 text-blue-300 text-[10px] font-bold uppercase tracking-wider border border-blue-400/30">
               {billToEdit ? 'Edit Upcoming Bill' : 'New Upcoming Bill Estimate'}
             </span>
-            <h3 className="text-lg font-bold text-white mt-1">
+            <h3 className="text-base sm:text-lg font-bold text-white mt-0.5">
               {billToEdit ? 'Modify Estimated Bill' : 'Project Next Bill / Obligation'}
             </h3>
           </div>
@@ -159,7 +159,7 @@ export const EstimatedBillModal: React.FC<EstimatedBillModalProps> = ({
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="p-6 space-y-4 text-xs sm:text-sm">
+        <form onSubmit={handleSubmit} className="p-4 sm:p-6 space-y-4 text-xs sm:text-sm overflow-y-auto flex-1">
           {/* Category Selector */}
           <div>
             <label className="block text-xs font-bold text-slate-700 uppercase mb-1 flex items-center space-x-1">

@@ -1,5 +1,25 @@
 @import "tailwindcss";
 
+@layer utilities {
+  /* Hide scrollbar for Chrome, Safari and Opera */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  /* Hide scrollbar for IE, Edge and Firefox */
+  .no-scrollbar {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+  }
+
+  .touch-manipulation {
+    touch-action: manipulation;
+  }
+}
+
+html {
+  -webkit-tap-highlight-color: transparent;
+}
+
 @media print {
   body {
     background-color: #ffffff !important;
@@ -29,4 +49,5 @@
     display: table-footer-group;
   }
 }
+
 

@@ -17,7 +17,16 @@ import { TransactionModal } from './components/TransactionModal';
 import { AllotmentModal } from './components/AllotmentModal';
 import { WhatIfScenarioModal } from './components/WhatIfScenarioModal';
 import { EstimatedBillModal } from './components/EstimatedBillModal';
-import { TrendingUp, ArrowRight, Sparkles, Receipt, CalendarClock, Plus } from 'lucide-react';
+import {
+  TrendingUp,
+  ArrowRight,
+  Sparkles,
+  Receipt,
+  CalendarClock,
+  Plus,
+  Layers,
+  FileSpreadsheet
+} from 'lucide-react';
 
 export default function App() {
   // Load state from localStorage with fallback to default WFP data
@@ -215,16 +224,16 @@ export default function App() {
       />
 
       {/* Main Container */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+      <main className="flex-1 max-w-7xl w-full mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-6 space-y-5 sm:space-y-6 pb-20 md:pb-8">
         {/* Navigation Tabs (Overview / Bills / Forecast / Ledger / Analytics) */}
-        <div className="flex flex-wrap items-center justify-between border-b border-slate-200 pb-3 gap-2 print:hidden">
-          <div className="flex flex-wrap items-center gap-2">
+        <div className="flex items-center justify-between border-b border-slate-200 pb-2.5 sm:pb-3 gap-2 print:hidden overflow-x-auto no-scrollbar -mx-1 px-1">
+          <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
             <button
               onClick={() => setActiveTab('overview')}
-              className={`px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-semibold transition-colors cursor-pointer ${
+              className={`px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold transition-colors cursor-pointer shrink-0 whitespace-nowrap ${
                 activeTab === 'overview'
                   ? 'bg-slate-900 text-white shadow-xs'
-                  : 'bg-white text-slate-600 hover:bg-slate-200/70'
+                  : 'bg-white text-slate-600 hover:bg-slate-200/70 border border-slate-200/60'
               }`}
             >
               Executive Summary & Allotments
@@ -232,7 +241,7 @@ export default function App() {
 
             <button
               onClick={() => setActiveTab('bills')}
-              className={`px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-semibold transition-colors cursor-pointer inline-flex items-center space-x-1.5 ${
+              className={`px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold transition-colors cursor-pointer inline-flex items-center space-x-1.5 shrink-0 whitespace-nowrap ${
                 activeTab === 'bills'
                   ? 'bg-blue-600 text-white shadow-xs'
                   : 'bg-white text-blue-700 hover:bg-blue-50 border border-blue-200'
@@ -253,7 +262,7 @@ export default function App() {
 
             <button
               onClick={() => setActiveTab('forecast')}
-              className={`px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-semibold transition-colors cursor-pointer inline-flex items-center space-x-1.5 ${
+              className={`px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold transition-colors cursor-pointer inline-flex items-center space-x-1.5 shrink-0 whitespace-nowrap ${
                 activeTab === 'forecast'
                   ? 'bg-indigo-700 text-white shadow-xs'
                   : 'bg-white text-indigo-700 hover:bg-indigo-50 border border-indigo-200'
@@ -274,10 +283,10 @@ export default function App() {
 
             <button
               onClick={() => setActiveTab('ledger')}
-              className={`px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-semibold transition-colors cursor-pointer ${
+              className={`px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold transition-colors cursor-pointer shrink-0 whitespace-nowrap ${
                 activeTab === 'ledger'
                   ? 'bg-slate-900 text-white shadow-xs'
-                  : 'bg-white text-slate-600 hover:bg-slate-200/70'
+                  : 'bg-white text-slate-600 hover:bg-slate-200/70 border border-slate-200/60'
               }`}
             >
               Disbursement Ledger ({ledgerItems.length})
@@ -285,17 +294,17 @@ export default function App() {
 
             <button
               onClick={() => setActiveTab('analytics')}
-              className={`px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-semibold transition-colors cursor-pointer ${
+              className={`px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold transition-colors cursor-pointer shrink-0 whitespace-nowrap ${
                 activeTab === 'analytics'
                   ? 'bg-slate-900 text-white shadow-xs'
-                  : 'bg-white text-slate-600 hover:bg-slate-200/70'
+                  : 'bg-white text-slate-600 hover:bg-slate-200/70 border border-slate-200/60'
               }`}
             >
               Visual Analytics & Trends
             </button>
           </div>
 
-          <div className="text-xs text-slate-500 hidden sm:block">
+          <div className="text-xs text-slate-500 hidden xl:block shrink-0">
             Approved Consolidated WFP 2026
           </div>
         </div>
@@ -469,6 +478,72 @@ export default function App() {
           </div>
         )}
       </main>
+
+      {/* Sticky Mobile Bottom Navigation Bar (Visible only on mobile/tablet) */}
+      <div className="fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-slate-200 px-3 py-1.5 flex items-center justify-around md:hidden shadow-lg print:hidden">
+        <button
+          onClick={() => setActiveTab('overview')}
+          className={`flex flex-col items-center justify-center py-1 px-2 rounded-lg text-[10px] font-semibold transition-colors cursor-pointer touch-manipulation min-w-[54px] ${
+            activeTab === 'overview'
+              ? 'text-blue-600 bg-blue-50'
+              : 'text-slate-600 hover:text-slate-900'
+          }`}
+        >
+          <Layers className="w-4 h-4 mb-0.5" />
+          <span>Summary</span>
+        </button>
+
+        <button
+          onClick={() => setActiveTab('bills')}
+          className={`flex flex-col items-center justify-center py-1 px-2 rounded-lg text-[10px] font-semibold transition-colors cursor-pointer touch-manipulation relative min-w-[54px] ${
+            activeTab === 'bills'
+              ? 'text-blue-600 bg-blue-50'
+              : 'text-slate-600 hover:text-slate-900'
+          }`}
+        >
+          <CalendarClock className="w-4 h-4 mb-0.5" />
+          <span>Next Bills</span>
+          {activeBillsCount > 0 && (
+            <span className="absolute top-1 right-2 w-2 h-2 rounded-full bg-blue-600 ring-2 ring-white" />
+          )}
+        </button>
+
+        {/* Center Quick Record Button */}
+        <button
+          onClick={() => {
+            setEditingItem(null);
+            setIsAddModalOpen(true);
+          }}
+          className="flex flex-col items-center justify-center -mt-5 bg-blue-600 active:bg-blue-700 text-white rounded-full p-3 shadow-lg shadow-blue-500/40 cursor-pointer touch-manipulation ring-4 ring-white"
+          title="Add Expense Voucher"
+        >
+          <Plus className="w-5 h-5" />
+        </button>
+
+        <button
+          onClick={() => setActiveTab('forecast')}
+          className={`flex flex-col items-center justify-center py-1 px-2 rounded-lg text-[10px] font-semibold transition-colors cursor-pointer touch-manipulation min-w-[54px] ${
+            activeTab === 'forecast'
+              ? 'text-indigo-600 bg-indigo-50'
+              : 'text-slate-600 hover:text-slate-900'
+          }`}
+        >
+          <TrendingUp className="w-4 h-4 mb-0.5" />
+          <span>Forecast</span>
+        </button>
+
+        <button
+          onClick={() => setActiveTab('ledger')}
+          className={`flex flex-col items-center justify-center py-1 px-2 rounded-lg text-[10px] font-semibold transition-colors cursor-pointer touch-manipulation min-w-[54px] ${
+            activeTab === 'ledger'
+              ? 'text-slate-900 bg-slate-100'
+              : 'text-slate-600 hover:text-slate-900'
+          }`}
+        >
+          <FileSpreadsheet className="w-4 h-4 mb-0.5" />
+          <span>Ledger</span>
+        </button>
+      </div>
 
       {/* Footer */}
       <footer className="bg-white border-t border-slate-200 mt-12 py-4 print:hidden">
