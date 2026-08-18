@@ -1,0 +1,6 @@
+{
+  "name": "RAMS Administrative Costs & WFP Budget Tracker",
+  "description": "Financial budget utilization, allotment monitoring, itemized disbursement ledger, upcoming bills estimation, and multi-year budget forecasting (FY 2026-2028) in Philippine Peso (₱) for RAMS Administrative Costs per approved consolidated WFP.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
